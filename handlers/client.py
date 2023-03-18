@@ -1,10 +1,15 @@
 from aiogram import types, Dispatcher
 from create_bot import dp, bot
 from keyboards import client_kb as nav
+from base import sqlite_dp
 
 
 async def command_start(message: types.Message):
     await bot.send_message(message.from_user.id, 'Добро пожаловать в наш сервисный центр iPachino, выбери устройство:'. format(message.from_user), reply_markup = nav.mainMenu)
+
+#----- Test Values -----
+async def menu_chuse(message: types.Message):
+    await sqlite_dp.sql_read(message)
 
 async def apple_chuse(message: types.Message):
     if message.text == 'Apple':
@@ -73,3 +78,4 @@ def register_handlers_client(dp : Dispatcher):
     dp.register_message_handler(huawei_chuse, text=['Huawei'])
     dp.register_message_handler(realme_chuse, text=['Realme'])
     dp.register_message_handler(game_chuse, text=['Игровая консоль'])
+    dp.register_message_handler(menu_chuse, text=['Меню'])

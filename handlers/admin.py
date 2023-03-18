@@ -3,6 +3,9 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types, Dispatcher
 from create_bot import dp, bot
 from aiogram.dispatcher.filters import Text
+from base import sqlite_dp
+from keyboards import admin_kb
+
 
 ID = None
 
@@ -17,7 +20,7 @@ class FSMAdmin(StatesGroup):
 async def make_changes_command(message: types.Message):
     global ID
     ID = message.from_user.id
-    await bot.send_message(message.from_user.id, 'Что надо кожанный?')
+    await bot.send_message(message.from_user.id, 'Что надо кожанный?', reply_markup=admin_kb.adminMenu)
     await message.delete()
 
 
@@ -63,10 +66,8 @@ async def load_price(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['price'] = float(message.text)
 
-    async with state.proxy() as data:
-        await message.reply(str(data))
-#    sql_add(state)
-    await state.finish()
+        await sqlite_dp.sql_add_command(state)
+        await state.finish()
 
 #Выход из состоянией
 # @dp.message_handler(state="*", commands='отмена')
